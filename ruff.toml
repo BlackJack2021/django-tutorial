@@ -6,11 +6,6 @@ ignore = [
     "D103", # 全ての public function に docstring を要求するのは冗長
 ]
 
-exclude = [
-    "src/django_tutorial/mysite",
-    "src/django_tutorial/manage.py",
-]
-
 [format]
 quote-style = "double"
 indent-style = "space"
