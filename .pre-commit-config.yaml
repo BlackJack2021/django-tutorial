@@ -1,0 +1,26 @@
+repos:
+  - repo: local
+    hooks:
+      # 開発整備時点でテストがないのでコメントアウト
+      #      - id: pytest
+      #        name: pytest
+      #        entry: .venv/bin/pytest
+      #        language: system
+      #        types: [python]
+      #        pass_filenames: false
+      - id: mypy
+        name: mypy
+        entry: .venv/bin/mypy .
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: ruff-check
+        name: ruff check
+        entry: .venv/bin/ruff check
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: ruff format
+        entry: .venv/bin/ruff format
+        language: system
+        types: [python]
