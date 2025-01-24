@@ -2,6 +2,12 @@
 select = ["ALL"]
 ignore = [
     "D104", # トップモジュールに毎回 docstring を要求するのは冗長
+    "D100", # 上と同じ理由 
+    "D103", # 全ての public function に docstring を要求するのは冗長
+]
+
+exclude = [
+    "src/django_tutorial/mysite",
 ]
 
 [format]
