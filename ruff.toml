@@ -8,6 +8,7 @@ ignore = [
 
 exclude = [
     "src/django_tutorial/mysite",
+    "src/django_tutorial/manage.py",
 ]
 
 [format]
