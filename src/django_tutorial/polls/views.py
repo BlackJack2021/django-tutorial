@@ -2,6 +2,7 @@ from django.db.models import F
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.utils import timezone
 from django.views import generic
 
 from .models import Choice, Question
@@ -18,13 +19,21 @@ class IndexView(generic.ListView):
     context_object_name = "latest_question_list"
 
     def get_queryset(self):
-        """最新の5件の質問を取得する"""
-        return Question.objects.order_by("-pub_date")[:5]
+        """最新の5件の質問を取得する
+
+        追加要件: 公開日が未来の質問は表示しない
+        """
+        not_future_questions = Question.objects.filter(pub_date__lte=timezone.now())
+        return not_future_questions.order_by("-pub_date")[:5]
 
 
 class DetailView(generic.DetailView):
     model = Question
     template_name = "polls/detail.html"
+
+    def get_queryset(self):
+        """公開日が未来の質問は表示しない"""
+        return Question.objects.filter(pub_date__lte=timezone.now())
 
 
 class ResultsView(generic.DetailView):
