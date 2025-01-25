@@ -1,30 +1,35 @@
 from django.db.models import F
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.template import loader
 from django.urls import reverse
+from django.views import generic
 
 from .models import Choice, Question
 
 
-def index(request: HttpRequest) -> HttpResponse:
-    # ハイフンありだと降順で並ぶ。ハイフンがないと昇順。
-    latest_question_list = Question.objects.order_by("-pub_date")[:5]
-    template = loader.get_template("polls/index.html")
-    context = {
-        "latest_question_list": latest_question_list,
-    }
-    return HttpResponse(template.render(context, request))
+class IndexView(generic.ListView):
+    # template_name を指定しない場合は、
+    # デフォルトで <app_name>/<model_name>_list.html が使用される
+    # 今回はデフォルト名とは異なる templates 名なので、明示的に指定する必要がある
+    template_name = "polls/index.html"
+    # context_object_name を指定しない場合、
+    # デフォルトで <model_name>_list という名称になる
+    # デフォルト値とは異なる名前で定義していたので、明示的に指定が必要
+    context_object_name = "latest_question_list"
+
+    def get_queryset(self):
+        """最新の5件の質問を取得する"""
+        return Question.objects.order_by("-pub_date")[:5]
 
 
-def detail(request: HttpRequest, question_id: int) -> HttpResponse:
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, "polls/detail.html", {"question": question})
+class DetailView(generic.DetailView):
+    model = Question
+    template_name = "polls/detail.html"
 
 
-def results(request: HttpRequest, question_id: int) -> HttpResponse:
-    question = get_object_or_404(Question, pk=question_id)
-    return render(request, "polls/results.html", {"question": question})
+class ResultsView(generic.DetailView):
+    model = Question
+    template_name = "polls/results.html"
 
 
 def vote(request: HttpRequest, question_id: int) -> HttpResponse:
